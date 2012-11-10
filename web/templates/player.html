@@ -1,0 +1,28 @@
+{% extends 'base_player.html' %}
+
+{% block content %}
+    <script type="text/javascript">
+    var tracks = {{ track_json|safe }};
+    </script>
+    <div class="player jp-interface">
+        <div class="header">
+            <h3>{{ track.title }}</h3>
+        </div>
+        <div class="content">
+            <div class="left">
+                <div class="jp-play">Play</div>
+                <div class="jp-pause">Pause</div>
+            </div>
+            <div class="waveform jp-progress">
+                <img src="/waveform/?track_id={{ track.id }}" />
+                <div class="jp-progress">
+                    <div class="jp-seek-bar">
+                        
+                    </div>
+                    <div class="jp-play-bar"></div>
+                </div>
+            </div>
+        </div>
+        <div id="jplayer"></div>
+    </div>
+{% endblock %}
