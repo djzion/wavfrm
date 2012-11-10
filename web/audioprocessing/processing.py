@@ -313,9 +313,8 @@ class WaveformImage(object):
             background_color = (213, 217, 221)
             colors = map( partial(desaturate, amount=0.8), [self.color_from_value(value/29.0) for value in range(0,30)])
         else:
-            colors = map( partial(desaturate, amount=0.7), [
-                (0,0,0),
-                (255,225,255)
+            colors = map(partial(desaturate, amount=0.7), [
+                color
                 ])
             
         self.image = Image.new("RGBA", (image_width, image_height), None)

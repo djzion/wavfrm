@@ -6,6 +6,8 @@ Visual Waveform API
 Install
 ==
 
+cp settings.py.default settings.py #make your local changes
+
 virtualenv env
 source env/bin/activate
 pip install -r requirements.txt

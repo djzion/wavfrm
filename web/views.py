@@ -6,12 +6,9 @@ from django.core.serializers import serialize
 from django.db.models import ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from PIL import ImageFont
-from PIL import Image
-from PIL import ImageDraw
+from PIL import ImageFont, Image, ImageDraw
 from web.tasks import create_waveform
 from web.models import *
-import pdb
 
 def homepage(request):
     return render_to_response('homepage.html', locals(), context_instance=RequestContext(request))
@@ -28,7 +25,6 @@ def player(request, track_id):
     return render_to_response('player.html', locals(), context_instance=RequestContext(request))
 
 def create_track(request):
-    
     if request.method == 'POST':
         t = Track(
             url = request.REQUEST['url']
@@ -39,7 +35,6 @@ def create_track(request):
     return render_to_response('create_track.html', locals(), context_instance=RequestContext(request))
     
 def waveform(request):
-
     if 'bgcolor' in request.GET:
         bgcolor = request.GET['bgcolor']
     else:
@@ -59,9 +54,7 @@ def waveform(request):
         async = bool(int(request.GET['async']))
     else:
         async = True
-        
-    print locals()
-        
+
     if 'track_id' in request.GET:
         try:
             track = Track.objects.get(id=request.GET['track_id'])
@@ -69,7 +62,6 @@ def waveform(request):
             return HttpResponseNotFound()
             
     elif 'url' in request.GET:
-        
         #find track for this url, or create one
         try:
             track = Track.objects.get(url=request.GET['url'])
@@ -88,11 +80,11 @@ def waveform(request):
     #else create one
     except ObjectDoesNotExist:
         waveform = Waveform(
-          track = track,
-          bgcolor = bgcolor,
-          color = color
-    )
-    waveform.save()            
+            track = track,
+            bgcolor = bgcolor,
+            color = color
+        )
+        waveform.save()
     
     if async:
         create_waveform.delay(waveform)
@@ -103,6 +95,12 @@ def waveform(request):
     
             
 def waveform_processing(request, t):
+    """
+    Interstitial for async mode
+    :param request:
+    :param t:
+    :return:
+    """
     font = ImageFont.truetype(settings.PROJECT_PATH + '/web/static/fonts/Rockwell.ttf', 14)
     img=Image.new("RGBA", (200,100), None)
     draw = ImageDraw.Draw(img)
