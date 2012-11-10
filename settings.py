@@ -2,7 +2,7 @@ from settings_common import *
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-
+CELERY_ALWAYS_EAGER = True
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.

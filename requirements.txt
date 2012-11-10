@@ -7,6 +7,7 @@ celery==3.0.11
 django-celery==3.0.11
 kombu==2.4.8
 numpy==1.6.2
+pyechonest==4.3.0
 python-dateutil==1.5
 pytz==2012h
 scikits.audiolab==0.11.0

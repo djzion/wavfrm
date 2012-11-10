@@ -1,2 +1,6 @@
+.idea
 env/*
 *.pyc
+web/static/media/waveforms/*
+web/static/media/track_tmp/*
+web/static/media/tmp/*

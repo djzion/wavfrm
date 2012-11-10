@@ -1,10 +1,19 @@
 import os, pickle
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.conf import settings
 from django.core.files import File
 from pyechonest.track import *
 from pyechonest import config
 import models
+
+class ApiTest(TestCase):
+    def setUp(self):
+        pass
+
+    def test_basic(self):
+        c = Client()
+        resp = c.get('/waveform/', {'url': 'http://localhost:8000/static/audio/perspective.mp3', 'async': 0})
+        pass
 
 class EchonestTest(TestCase):
     url = 'http://unhearduv.com/wp-content/uploads/2012/06/1-Pericles-Rise-of-the-Jellyfish.mp3'
