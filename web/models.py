@@ -41,6 +41,7 @@ class Track(models.Model):
     waveform_img = models.ImageField(upload_to='waveforms', null=True)
     peaks = models.TextField(null=True)
     created = models.DateTimeField(auto_now_add=True)
+    echonest_analysis = models.TextField(null=True)
     user = models.ForeignKey(User, null=True)
     
     def get_waveform(self):

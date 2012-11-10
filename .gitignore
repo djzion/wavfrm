@@ -1,4 +1,7 @@
 .idea
+.DS_Store
+db.sqlite
+*/.DS_Store
 env/*
 *.pyc
 web/static/media/waveforms/*

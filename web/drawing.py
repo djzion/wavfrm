@@ -25,8 +25,9 @@ def overlay_bars(waveform, echo_track):
         dx = int(bar['start'] * pixels_per_second)
         bar_width = int(bar['confidence']) * 3
         #if new_section: bar_width += 2
-        bar_alpha = 128 - int(bar['confidence'] * 127)
-        draw.line((dx, 0, dx, img.size[1]), fill=(0, 0, 0, bar_alpha), width=bar_width)
+        bar_alpha = 200 - int(bar['confidence'] * 127)
+        if bar_alpha > 255: bar_alpha = 255
+        draw.line((dx, 0, dx, img.size[1]), fill=(200, 0, 0, bar_alpha), width=bar_width)
 
     #for beat in echo_track.beats:
     #    dx = int(beat['start'] * pixels_per_second)
@@ -35,3 +36,4 @@ def overlay_bars(waveform, echo_track):
     out_path = os.path.join(os.path.split(waveform.waveform_img.path)[0], 'overlayed.png')
     fp_out = open(out_path, 'w')
     img.save(fp_out)
+    return fp_out.name

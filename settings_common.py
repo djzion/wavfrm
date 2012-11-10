@@ -134,6 +134,8 @@ LOGGING = {
     }
 }
 
+TMP_DIR = '/tmp'
+
 BROKER_URL = 'django://'
 import djcelery
 djcelery.setup_loader()

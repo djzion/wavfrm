@@ -13,10 +13,12 @@ class ApiTest(TestCase):
     def test_basic(self):
         c = Client()
         resp = c.get('/waveform/', {'url': 'http://localhost:8000/static/audio/perspective.mp3', 'async': 0})
+        self.assertEqual(resp._headers['content-type'][1], 'image/png')
         pass
 
 class EchonestTest(TestCase):
     url = 'http://unhearduv.com/wp-content/uploads/2012/06/1-Pericles-Rise-of-the-Jellyfish.mp3'
+    tmp_filename = os.path.join('/tmp', 'echonest.png')
     pickled_at = '_track_picked'
 
     def setUp(self):
@@ -29,16 +31,31 @@ class EchonestTest(TestCase):
             self.track = pickle.load(open(self.pickled_at, 'r'))
 
     def test_track_from_url(self):
-        img_file = File(open(os.path.join(settings.MEDIA_ROOT, 'waveforms', '1_w_136.png'), 'r'))
-        track = models.Track.objects.create(url = self.url, waveform_img = img_file)
+        waveform = WaveformFactory.create_waveform(self.url, self.tmp_filename)
+        from drawing import overlay_bars
+        overlayed_filename = overlay_bars(waveform, self.track)
+        print 'Image at %s' % overlayed_filename
+
+class WaveformFactory(object):
+
+    @classmethod
+    def create_waveform(cls, url, local_filename, params=None):
+        if os.path.exists(local_filename): return cls.create_waveform_from_existing_file(local_filename, url)
+        print 'Local file %s not found, creating waveform for %s' % (local_filename, url)
+        c = Client()
+        resp = c.get('/waveform/', {'url': url, 'async': 0})
+        out = open(local_filename, 'w')
+        out.write(resp.content)
+        out.close()
+        return models.Waveform.objects.order_by('-created')[0]
+
+    @classmethod
+    def create_waveform_from_existing_file(cls, local_filename, url):
+        img_file = File(open(local_filename, 'r'))
+        track = models.Track.objects.create(url = url, waveform_img = img_file)
         waveform = models.Waveform(
             track = track,
             waveform_img = img_file
         )
         waveform.save()
-        from tasks import create_waveform
-        #create_waveform(waveform)
-
-        from drawing import overlay_bars
-        overlay_bars(waveform, self.track)
-        print track
+        return waveform
