@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import get_object_or_404, get_list_or_404, render_to_response
 from django.template.context import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
@@ -92,7 +93,16 @@ def waveform(request):
     else:
         create_waveform(waveform)
         return HttpResponse(waveform.waveform_img.read(), mimetype='image/png')
-    
+
+def get_track(request, track_id):
+    track = Track.objects.get(id=track_id)
+    from django.core.serializers.json import DjangoJSONEncoder
+    from django.core import serializers
+    data = serializers.serialize("json", [track])
+    return HttpResponse(data)
+
+def canvas_track(request, track_id):
+    return render_to_response('canvas_player.html', locals(), context_instance=RequestContext(request))
             
 def waveform_processing(request, t):
     """

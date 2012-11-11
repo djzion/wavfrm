@@ -4,7 +4,11 @@ wavfrm
 Visual Waveform API
 
 Install
-==
+======
+
+sudo aptitude install libsndfile-dev
+or
+brew install libsndfile
 
 cp settings.py.default settings.py #make your local changes
 

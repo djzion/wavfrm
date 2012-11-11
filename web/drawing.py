@@ -2,6 +2,17 @@ import os, logging
 from PIL import Image, ImageFont, ImageDraw
 from django.conf import settings
 
+HEX = '0123456789abcdef'
+
+def rgb(triplet):
+    triplet = triplet.lower()
+    return (HEX.index(triplet[0])*16 + HEX.index(triplet[1]),
+            HEX.index(triplet[2])*16 + HEX.index(triplet[3]),
+            HEX.index(triplet[4])*16 + HEX.index(triplet[5]))
+
+def triplet(rgb):
+    return hex(rgb[0])[2:] + hex(rgb[1])[2:] + hex(rgb[2])[2:]
+
 def overlay_bars(waveform, echo_track):
     img = Image.open(waveform.waveform_img.path)
     draw = ImageDraw.Draw(img)
@@ -29,9 +40,9 @@ def overlay_bars(waveform, echo_track):
         if bar_alpha > 255: bar_alpha = 255
         draw.line((dx, 0, dx, img.size[1]), fill=(200, 0, 0, bar_alpha), width=bar_width)
 
-    #for beat in echo_track.beats:
-    #    dx = int(beat['start'] * pixels_per_second)
-    #    draw.line((dx, 0, dx, img.size[1]))
+    for beat in echo_track.bars:
+        dx = int(beat['start'] * pixels_per_second)
+        draw.line((dx, 0, dx, img.size[1]))
 
     out_path = os.path.join(os.path.split(waveform.waveform_img.path)[0], 'overlayed.png')
     fp_out = open(out_path, 'w')

@@ -451,7 +451,7 @@ def create_wave_images(input_filename, output_filename_w, output_filename_s, ima
     processor = AudioProcessor(input_filename, fft_size, numpy.hanning)
     samples_per_pixel = processor.audio_file.nframes / float(image_width)
     logging.info('Creating image')
-    waveform = WaveformImage(image_width, image_height, palette=11, bgcolor=None, color=color)
+    waveform = WaveformImage(image_width, image_height, palette='custom', bgcolor=None, color=color)
     spectrogram = SpectrogramImage(image_width, image_height, fft_size)
     all_peaks = []
     

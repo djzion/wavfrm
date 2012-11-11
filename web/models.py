@@ -38,8 +38,10 @@ class MockFileField(object):
 class Track(models.Model):
     url = models.CharField(max_length=255)
     title = models.CharField(max_length=255, null=True)
+    duration = models.FloatField(null=True)
     waveform_img = models.ImageField(upload_to='waveforms', null=True)
     peaks = models.TextField(null=True)
+    centroids = models.TextField(null=True)
     created = models.DateTimeField(auto_now_add=True)
     echonest_analysis = models.TextField(null=True)
     user = models.ForeignKey(User, null=True)

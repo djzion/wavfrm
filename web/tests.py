@@ -19,12 +19,12 @@ class ApiTest(TestCase):
 class EchonestTest(TestCase):
     url = 'http://unhearduv.com/wp-content/uploads/2012/06/1-Pericles-Rise-of-the-Jellyfish.mp3'
     tmp_filename = os.path.join('/tmp', 'echonest.png')
-    pickled_at = '_track_picked'
+    pickled_at = os.path.join('/tmp', 'echonest_test_track_cache')
 
     def setUp(self):
         config.ECHO_NEST_API_KEY="QGSW4XPT3YCHCIE61"
 
-        if not os.path.exists(self.pickled_at):
+        if True or not os.path.exists(self.pickled_at):
             self.track = track_from_url(self.url)
             pickle.dump(self.track, open(self.pickled_at, 'w'), pickle.HIGHEST_PROTOCOL)
         else:
