@@ -286,7 +286,7 @@ class WaveformImage(object):
     Given peaks and spectral centroids from the AudioProcessor, this class will construct
     a wavefile image which can be saved as PNG.
     """
-    def __init__(self, image_width, image_height, palette=1, bgcolor=(255, 255, 255), color=(100, 100, 100)):
+    def __init__(self, image_width, image_height, palette=1, bgcolor=(255, 255, 255), color=(100, 100, 100), desaturation=None):
         if image_height % 2 == 0:
             raise AudioProcessingException, "Height should be uneven: images look much better at uneven height"
         background_color = bgcolor
@@ -313,9 +313,8 @@ class WaveformImage(object):
             background_color = (213, 217, 221)
             colors = map( partial(desaturate, amount=0.8), [self.color_from_value(value/29.0) for value in range(0,30)])
         else:
-            colors = map(partial(desaturate, amount=0.7), [
-                color
-                ])
+            if desaturation: colors = map(partial(desaturate, amount=desaturation), color)
+            else: colors = color
             
         self.image = Image.new("RGBA", (image_width, image_height), None)
         

@@ -2,13 +2,12 @@ import json
 from django.shortcuts import get_object_or_404, get_list_or_404, render_to_response
 from django.template.context import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
-from django.utils import simplejson
 from django.core.serializers import serialize
 from django.db.models import ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from PIL import ImageFont, Image, ImageDraw
-from web.tasks import create_waveform
+from web.tasks import create_waveform_task
 from web.models import *
 
 def homepage(request):
@@ -19,10 +18,10 @@ def user_tracks(request):
     tracks = Track.objects.get(user=request.user).order_by('-created')
     return render_to_response('user/tracks.html', locals(), context_instance=RequestContext(request))
 
-def player(request, track_id):
-    tracks = get_list_or_404(Track, id=track_id)
-    track = tracks[0]
-    track_json = serialize('json', tracks)
+def player(request, waveform_id):
+    waveform = get_object_or_404(Waveform, id=waveform_id)
+    track = waveform.track
+    track_json = serialize('json', [track])
     return render_to_response('player.html', locals(), context_instance=RequestContext(request))
 
 def create_track(request):
@@ -35,70 +34,62 @@ def create_track(request):
         
     return render_to_response('create_track.html', locals(), context_instance=RequestContext(request))
     
-def waveform(request):
-    if 'bgcolor' in request.GET:
-        bgcolor = request.GET['bgcolor']
-    else:
-        bgcolor = 'ffffff'
-    
-    if 'color' in request.GET:
-        color = request.GET['color']
-    else:
-        color = '333333'
-        
-    if 'force_regen' in request.GET:
-        force_regen = True
-    else:
-        force_regen = False
-        
-    if 'async' in request.GET:
-        async = bool(int(request.GET['async']))
-    else:
-        async = True
+def create_waveform(request, respond_with='img'):
+    async = int(request.REQUEST.get('async', 1))
+    force_regen = int(request.REQUEST.get('force_regen', 0))
 
-    if 'track_id' in request.GET:
+    wave_params = {'color': '006699', 'color_centroid': '52d3d3'}
+    if 'bgcolor' in request.REQUEST and request.REQUEST['bgcolor'] != '': wave_params['bgcolor'] = request.REQUEST['bgcolor']
+    if 'color' in request.REQUEST and request.REQUEST['color'] != '': wave_params['color'] = request.REQUEST['color']
+    if 'color_centroid' in request.REQUEST and request.REQUEST['color_centroid'] != '': wave_params['color_centroid'] = request.REQUEST['color_centroid']
+
+    if 'track_id' in request.REQUEST:
         try:
-            track = Track.objects.get(id=request.GET['track_id'])
-        except ObjectDoesNotExist:
+            track = Track.objects.get(id=request.REQUEST['track_id'])
+        except Track.DoesNotExist:
             return HttpResponseNotFound()
             
-    elif 'url' in request.GET:
+    elif 'url' in request.REQUEST:
         #find track for this url, or create one
         try:
-            track = Track.objects.get(url=request.GET['url'])
-        except ObjectDoesNotExist:
-            track = Track(
-                url = request.GET['url']
-            )
+            track = Track.objects.get(url=request.REQUEST['url'])
+            existing_track = True
+        except Track.DoesNotExist:
+            existing_track = False
+            track = Track(url = request.REQUEST['url'])
             track.save()
             
     #find a waveform of matching params for this track, if it exists its image is created redirect to it
     try:
-        waveform = track.waveform_set.get(bgcolor=bgcolor, color=color)
-        #pdb.set_trace()
+        waveform = track.waveform_set.get(**wave_params)
         if waveform.waveform_img and not force_regen:
-            return HttpResponse(waveform.waveform_img.read(), mimetype='image/png')
+            if respond_with == 'img': return HttpResponse(waveform.waveform_img.read(), mimetype='image/png')
+            else: return get_waveform(request, waveform.id)
     #else create one
     except ObjectDoesNotExist:
-        waveform = Waveform(
-            track = track,
-            bgcolor = bgcolor,
-            color = color
-        )
+        waveform = Waveform(**wave_params)
+        waveform.track_id = track.id
         waveform.save()
     
-    if async:
-        create_waveform.delay(waveform)
-        return waveform_processing(request, track)
+    if not existing_track and async:
+        create_waveform_task.delay(waveform, force_regen=force_regen)
+        return HttpResponse(json.dumps({ 'track_id': track.id, 'waveform_id': waveform.id, 'status': waveform.status }))
     else:
-        create_waveform(waveform)
-        return HttpResponse(waveform.waveform_img.read(), mimetype='image/png')
+        create_waveform_task(waveform, force_regen=force_regen)
+        if respond_with == 'img': return HttpResponse(waveform.waveform_img.read(), mimetype='image/png')
+        else: return get_waveform(request, waveform.id)
+
+def show_waveform_img(request, waveform_id):
+    waveform = get_object_or_404(Waveform, id=waveform_id)
+    return HttpResponse(waveform.waveform_img.read(), mimetype='image/png')
+
+def get_waveform(request, waveform_id):
+    waveform = Waveform.objects.get(id=waveform_id)
+    return HttpResponse(json.dumps({ 'track_id': waveform.track.id, 'waveform_id': waveform.id, 'status': waveform.status }))
 
 def get_track(request, track_id):
     track = Track.objects.get(id=track_id)
-    from django.core.serializers.json import DjangoJSONEncoder
-    from django.core import serializers
-    data = serializers.serialize("json", [track])
+    data = serialize("json", [track])
     return HttpResponse(data)
 
 def canvas_track(request, track_id):

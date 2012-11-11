@@ -2,9 +2,13 @@ import os
 from django.db import models
 from django.conf import settings
 from django.contrib.admin.models import User
+from picklefield.fields import PickledObjectField
 
 def get_task_path(instance, filename, media_subfolder):
     return media_subfolder + '/' + filename
+
+def choices(choice_cls):
+    return [(attr, attr) for attr in choice_cls.__dict__.keys() if not attr.startswith('_')]
 
 class MockFileField(object):
     """
@@ -53,12 +57,32 @@ class Track(models.Model):
     def get_spectrum(self):
         return MockFileField(self.spectrum_img_path, 'waveforms')
     waveform = property(get_waveform)
-    
+
+class WaveformStatus:
+    waiting = 'waiting'
+    downloading = 'downloading'
+    processing = 'processing'
+    drawing = 'drawing'
+    echonest = 'echonest'
+    complete = 'complete'
+    error = 'error'
+
 class Waveform(models.Model):
+    _status_choices = WaveformStatus
     track = models.ForeignKey(Track)
-    color = models.CharField(max_length=20, default='333333')
-    bgcolor = models.CharField(max_length=20, default='ffffff')
+    color = models.CharField(max_length=6, default='006699')
+    color_centroid = models.CharField(max_length=6, null=True)
+    bgcolor = models.CharField(max_length=20, null=True)
     waveform_img = models.ImageField(upload_to='waveforms', null=True)
     spectrum_img = models.ImageField(upload_to='waveforms', null=True)
     created = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(choices=choices(WaveformStatus), default='waiting', max_length=50)
+
+    def __str__(self):
+        return '%s %s' % (self.waveform_img, self.status)
+
+    def to_dict(self):
+        data = self.__dict__
+        del data['created']
+        return data
     

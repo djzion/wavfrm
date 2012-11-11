@@ -1,7 +1,111 @@
-<html>
-    <head>
-    </head>
-    <body>
-        <iframe src="/player/1/?framed=true" width="300" height="80" scrolling="no"></iframe> 
-    </body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Wavfrm</h1>
+    <h3>Upload your songs, sets, or shows and get a visual waveform image and embeddable player.</h3>
+
+    <div id="status" style="display: none;">
+        <h2></h2>
+        <div class="progress"><div class="bar"></div></div>
+    </div>
+
+    <div class="row">
+
+        <div class="span4">
+            <form id="track_form">
+                <label>URL:</label><input name="url" />
+                <label>Bass Color:</label><input class="colorpicker" name="color" />
+                <label>Treble Color:</label><input class="colorpicker" name="color_centroid" />
+                <input class="btn" type="submit" id="submit" value="Go" />
+            </form>
+        </div>
+
+        <div id="result" class="span8" style="display: none">
+            <div id="img_container"></div>
+
+            <iframe id="player"></iframe>
+
+            <label>Embed Player</label>
+            <textarea id="embed_code"></textarea>
+
+            <label>Image Tag</label>
+            <textarea id="img_tag"></textarea>
+        </div>
+
+    </div>
+</div>
+<script>
+
+$(function() {
+    var waveform_id, track_id, pollCount = 0;
+    var statusPercentages = {
+        waiting: 10,
+        downloading: 30,
+        processing: 50,
+        drawing: 70,
+        echonest: 90,
+        complete: 100
+    }
+
+    var showResult = function() {
+        var imgHtml = '<img src="/waveform/' + waveform_id + '/" />'
+        //$('#img_container').html(imgHtml)
+        $('#img_tag').val(imgHtml)
+        $('#player').attr('src', '/player/' + waveform_id + '/img/')
+        $('#embed_code').val('<iframe width="100%" height="100%" src="/player/' + waveform_id + '/"></iframe>')
+        $('#result').show()
+    }
+
+    var pollStatus = function() {
+        $.getJSON('/waveform/' + waveform_id + '/', function(data) {
+            $('#status h2').html(data.status)
+            if (data.status == 'complete' || data.status == 'error') {
+                $('#status h2').html('Complete!')
+                $('#status').slideUp().delay(3000)
+                showResult()
+                return
+            }
+            $('#status .progress .bar').width(statusPercentages[data.status] + '%')
+            pollCount++
+            if (pollCount <= 100) setTimeout(pollStatus, 2000)
+        })
+    }
+
+    $('#track_form').submit(function() {
+        var params = $(this).serialize(true)
+        $.getJSON('/waveform/', params, function(data) {
+            waveform_id = data.waveform_id
+            track_id = data.track_id
+            if (data.status == 'complete') {
+                showResult()
+                return
+            }
+            $('#status').show()
+            pollStatus()
+        })
+        return false
+    })
+})
+
+</script>
+<style>
+
+#img_container {
+    height: 200px;
+    display: none
+}
+#img_container img {
+    width: 100%;
+    height: 100%;
+}
+#player {
+    width: 100%;
+    height: 200px;
+}
+#result textarea {
+    width: 100%
+}
+
+</style>
+{% endblock %}

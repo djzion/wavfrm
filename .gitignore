@@ -5,6 +5,7 @@ db.sqlite
 env/*
 *.pyc
 settings.py
+web/static/audio/*
 web/static/media/waveforms/*
 web/static/media/track_tmp/*
 web/static/media/tmp/*

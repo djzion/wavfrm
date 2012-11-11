@@ -2,12 +2,36 @@
 {% block content %}
 <script src="/static/js/underscore.js"></script>
 <script src="/static/js/canvas_waveform.js"></script>
-<canvas id="waveform" width="1000" height="300"></canvas>
+
+<div class="wrap">
+    <img id="backdrop" src="/waveform/?track_id={{ track_id }}" />
+    <canvas id="waveform" width="1000" height="300"></canvas>
+</div>
 
 <style>
 #waveform {
+
+}
+#backdrop {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+}
+.wrap {
+    position: relative;
+    width: 1000px;
+    height: 300px;
     border: 2px solid grey;
 }
-
 </style>
+<script>
+var track_id = {{ track_id }};
+var player;
+$(function() {
+    player = CanvasPlayer(track_id).init()
+})
+
+</script>
 {% endblock %}

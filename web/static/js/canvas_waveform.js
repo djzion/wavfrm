@@ -1,10 +1,10 @@
-var CanvasPlayer = (function() {
+var CanvasPlayer = (function(track_id) {
     var canvas = document.getElementById('waveform'), $canvas = $(canvas),
         track, echonest_analysis;
     var ctx = canvas.getContext('2d'), x = 0, y = 0, prev_x, prev_y, max_amp, amp_scale;
 
     var getX = function(seconds) {
-        return Math.round(seconds * ($canvas.width() / echonest_analysis.track.duration))
+        return Math.round(seconds * ($canvas.width() / echonest_analysis.duration))
     }
 
     var plotSegment = function(i, segment) {
@@ -62,7 +62,7 @@ var CanvasPlayer = (function() {
 
     var init = function() {
         $.ajax({
-            url: '/track/1/', dataType: 'json',
+            url: '/track/' + track_id + '/', dataType: 'json',
             async: false,
             success: function(data) {
                 track = data[0]
@@ -102,9 +102,3 @@ timeexec = function(func, msg) {
     console.log(msg + ': ' + (( new Date().getTime() - start) / 1000) + 's')
     return result
 }
-
-var player;
-$(function() {
-    player = CanvasPlayer().init()
-})
-

@@ -7,14 +7,25 @@ from pyechonest import config
 import models
 
 class ApiTest(TestCase):
+    url = 'http://unhearduv.com/wp-content/uploads/Perspective.mp3'
     def setUp(self):
         pass
 
     def test_basic(self):
         c = Client()
-        resp = c.get('/waveform/', {'url': 'http://localhost:8000/static/audio/perspective.mp3', 'async': 0})
+        resp = c.get('/waveform/', {'url': self.url, 'async': 0})
         self.assertEqual(resp._headers['content-type'][1], 'image/png')
         pass
+
+    def test_async(self):
+        c = Client()
+        resp = c.get('/waveform/', {'url': self.url})
+        print resp
+        pass
+
+    def test_colored(self):
+        c = Client()
+        resp = c.get('/waveform/', {'url': self.url, 'async': 0, 'color': '333333', 'color2': 'ff0000'})
 
 class EchonestTest(TestCase):
     url = 'http://unhearduv.com/wp-content/uploads/2012/06/1-Pericles-Rise-of-the-Jellyfish.mp3'
