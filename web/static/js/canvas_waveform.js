@@ -96,7 +96,7 @@ var CanvasPlayer = (function(track_id) {
             $(echonest_analysis.segments).each(plotSegment)
             ctx.stroke()
         }, 'Draw segments')
-        
+
     }
 
     return {
