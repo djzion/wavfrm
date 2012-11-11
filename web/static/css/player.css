@@ -15,6 +15,10 @@ html, body {
     line-height: 30px;
 }
 
+.player .header h3 {
+    margin: 0
+}
+
 .player .content {
     height: 200px;
 }

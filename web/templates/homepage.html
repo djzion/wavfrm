@@ -10,26 +10,26 @@
         <div class="progress"><div class="bar"></div></div>
     </div>
 
-    <div class="row">
+    <div class="row-fluid">
 
         <div class="span4">
             <form id="track_form">
                 <label>URL:</label><input name="url" />
-                <label>Bass Color:</label><input class="colorpicker" name="color" />
-                <label>Treble Color:</label><input class="colorpicker" name="color_centroid" />
+                <label>Bass Color:</label><input class="colorpicker" name="color" value="161616" />
+                <label>Treble Color:</label><input class="colorpicker" name="color_centroid" value="006699" />
                 <input class="btn" type="submit" id="submit" value="Go" />
             </form>
 
             <form id="hashform">
-                <label>Section Marker Color</label><input name="section_color" />
-                <label>Button Color</label><input name="button_color" />
+                <label>Section Marker Color</label><input name="section_color" value="52d3d3" />
+                <label>Button Color</label><input name="button_color" value="52d3d3" />
             </form>
         </div>
 
         <div id="result" class="span8" style="display: none">
             <div id="img_container"></div>
 
-            <iframe id="player"></iframe>
+            <iframe id="player" scrolling="no" border="0" width="100%" height="240"></iframe>
 
             <label>Embed Player</label>
             <textarea id="embed_code"></textarea>
@@ -60,7 +60,7 @@ $(function() {
         var hashQuery = '#' + $('#hashform').serialize(true)
         $('#player').attr('src', '/player/' + waveform_id + hashQuery)
 
-        $('#embed_code').val('<iframe width="100%" height="100%" src="/player/' + waveform_id + hashQuery + '/"></iframe>')
+        $('#embed_code').val('<iframe width="100%" height="240px" src="/player/' + waveform_id + hashQuery + '/" scrolling="no" border="0"></iframe>')
         $('#result').show()
     }
 
@@ -107,12 +107,13 @@ $(function() {
     height: 100%;
 }
 #player {
-    width: 100%;
-    height: 200px;
+    border: 0
 }
 #result textarea {
     width: 100%
 }
+#container { width: 100% }
+.container { width: 90%; margin: auto }
 
 </style>
 {% endblock %}
