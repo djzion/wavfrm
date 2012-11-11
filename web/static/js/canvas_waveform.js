@@ -1,7 +1,12 @@
 var CanvasPlayer = (function(track_id) {
-    var canvas = document.getElementById('waveform'), $canvas = $(canvas),
-        track, echonest_analysis;
+    var canvas = document.getElementById('waveform'), track, echonest_analysis;
+    //if (!canvas) {
+        canvas = $(canvas).attr('width', $('.waveform img').width()).attr('height', 200)[0]
+    //    $('.waveform').append(canvas)
+    //}
+    $canvas = $(canvas)
     var ctx = canvas.getContext('2d'), x = 0, y = 0, prev_x, prev_y, max_amp, amp_scale;
+    var section_color = '#8ED6FF'
 
     var getX = function(seconds) {
         return Math.round(seconds * ($canvas.width() / echonest_analysis.duration))
@@ -24,7 +29,7 @@ var CanvasPlayer = (function(track_id) {
         x = getX(section.start)
         delta_x = getX(section.duration)
         var sectionGadient = ctx.createLinearGradient(x, 0, x+30, 0);
-        sectionGadient.addColorStop(0, '#8ED6FF');
+        sectionGadient.addColorStop(0, section_color);
         sectionGadient.addColorStop(1, 'rgba(255, 255, 255, 0)');
         ctx.lineWidth = 1
         ctx.strokeStyle = 'rbg(0, 100, 200)'
@@ -72,13 +77,19 @@ var CanvasPlayer = (function(track_id) {
             }
         })
 
+        if (document.location.hash) {
+            query = getQuery()
+            if (query.section_color) section_color = query.section_color
+        }
+
         timeexec(function() {
             $(echonest_analysis.sections).each(plotSection)
         }, 'Draw sections')
         timeexec(function() {
-            $(echonest_analysis.beats).each(plotBar)
+            //$(echonest_analysis.beats).each(plotBar)
         }, 'Draw beats')
         timeexec(function() {
+            return
             ctx.beginPath();
             ctx.moveTo(prev_x, prev_y);
             ctx.strokeStyle = "rgb(50, 50, 50)";

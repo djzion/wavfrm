@@ -19,6 +19,11 @@
                 <label>Treble Color:</label><input class="colorpicker" name="color_centroid" />
                 <input class="btn" type="submit" id="submit" value="Go" />
             </form>
+
+            <form id="hashform">
+                <label>Section Marker Color</label><input name="section_color" />
+                <label>Button Color</label><input name="button_color" />
+            </form>
         </div>
 
         <div id="result" class="span8" style="display: none">
@@ -52,8 +57,10 @@ $(function() {
         var imgHtml = '<img src="/waveform/' + waveform_id + '/" />'
         //$('#img_container').html(imgHtml)
         $('#img_tag').val(imgHtml)
-        $('#player').attr('src', '/player/' + waveform_id + '/img/')
-        $('#embed_code').val('<iframe width="100%" height="100%" src="/player/' + waveform_id + '/"></iframe>')
+        var hashQuery = '#' + $('#hashform').serialize(true)
+        $('#player').attr('src', '/player/' + waveform_id + hashQuery)
+
+        $('#embed_code').val('<iframe width="100%" height="100%" src="/player/' + waveform_id + hashQuery + '/"></iframe>')
         $('#result').show()
     }
 

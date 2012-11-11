@@ -38,6 +38,11 @@ html, body {
     position: absolute;
 }
 
+.player .waveform canvas {
+    position: absolute;
+    top: 0;
+}
+
 .player .jp-progress {
     position: relative;
     height: 100%;
@@ -61,17 +66,34 @@ html, body {
     background-color: #006699;
 }
 
-.player .jp-play, .player .jp-pause {
-    width: 32px;
-    height: 32px;
-    display: inline-block;
+.player .controls a {
+    border-radius: 32px;
+    width: 64px;
+    height: 64px;
+    display: block;
+    margin: 0 auto;
+    position: relative;
     text-indent: -9999px;
 }
 
-.player .jp-play {
+.player .jp-play span, .player .jp-pause span {
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background-color: #eeeeee;
+    text-indent: -9999px;
+}
+
+.player .jp-play span {
     background: url(http://www.affinescheme.com/LifeLabHelp/LifeLabHelp/PlayPause_files/Play.png) top left no-repeat;
 }
 
-.player .jp-pause {
+.player .jp-pause span {
     background: url(http://www.affinescheme.com/LifeLabHelp/LifeLabHelp/PlayPause_files/PauseTexture.png) top left no-repeat;
+}
+
+.controls > a:hover {
+    border: 1px solid #ccc;
 }

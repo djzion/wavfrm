@@ -9,12 +9,15 @@
             <h3>{{ track.title }}</h3>
         </div>
         <div class="content">
-            <div class="left">
-                <div class="jp-play">Play</div>
-                <div class="jp-pause">Pause</div>
+            <div class="left controls" style="display: table;">
+                <div style="display: table-cell; vertical-align: middle">
+                    <a class="jp-play">Play<span></span></a>
+                    <a class="jp-pause">Pause<span></span></a>
+                </div>
             </div>
             <div class="waveform jp-progress">
                 <img src="/waveform/{{ waveform.id }}/img/" />
+                <canvas id="waveform"></canvas>
                 <div class="jp-progress">
                     <div class="jp-seek-bar">
                         
@@ -25,4 +28,15 @@
         </div>
         <div id="jplayer"></div>
     </div>
+
+    <script>
+        var track_id = {{ track.id }};
+        var player;
+        $(function() {
+            player = CanvasPlayer(track_id).init()
+            initPlayer()
+        })
+
+    </script>
+
 {% endblock %}
