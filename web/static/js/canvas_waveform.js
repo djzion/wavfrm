@@ -72,23 +72,23 @@ var CanvasPlayer = (function(track_id) {
             success: function(data) {
                 track = data[0]
                 echonest_analysis = JSON.parse(track.fields.echonest_analysis)
-                timeexec(calcAmplitude, 'Calculate amplitudes')
-                timeexec(maxAmplitude, 'Find max amplitude')
+                WavfrmUtil.timeExec(calcAmplitude, 'Calculate amplitudes')
+                WavfrmUtil.timeExec(maxAmplitude, 'Find max amplitude')
             }
         })
 
         if (document.location.hash) {
-            query = getQuery()
+            query = WavfrmUtil.getQuery()
             if (query.section_color) section_color = query.section_color
         }
 
-        timeexec(function() {
+        WavfrmUtil.timeExec(function() {
             $(echonest_analysis.sections).each(plotSection)
         }, 'Draw sections')
-        timeexec(function() {
+        WavfrmUtil.timeExec(function() {
             //$(echonest_analysis.beats).each(plotBar)
         }, 'Draw beats')
-        timeexec(function() {
+        WavfrmUtil.timeExec(function() {
             return
             ctx.beginPath();
             ctx.moveTo(prev_x, prev_y);
@@ -104,10 +104,3 @@ var CanvasPlayer = (function(track_id) {
         debug: debug
     }
 })
-
-timeexec = function(func, msg) {
-    var start = new Date().getTime()
-    var result = func()
-    console.log(msg + ': ' + (( new Date().getTime() - start) / 1000) + 's')
-    return result
-}

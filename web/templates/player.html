@@ -1,7 +1,7 @@
 {% extends 'base_player.html' %}
 
 {% block content %}
-    <div class="player jp-interface">
+    <div id="wavfrm_{{ track.id }}" class="player jp-interface">
         <div class="header">
             <h3>{{ track.title }}</h3>
         </div>
@@ -26,7 +26,7 @@
                 </div>
             </div>
         </div>
-        <div id="jplayer"></div>
+        <div id="wavfrm_{{ track.id }}_jplayer"></div>
     </div>
 
     <script>
@@ -36,8 +36,8 @@
         var player, canvasPlayer;
         $(function() {
             canvasPlayer = CanvasPlayer(track_id).init()
-            player = WavfrmPlayer()
-            player.init($('#jplayer'))
+            player = WavfrmPlayer(track_id)
+            player.init($('#wavfrm_' + track_id + '_jplayer'))
         })
 
     </script>

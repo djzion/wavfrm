@@ -1,5 +1,7 @@
 var WavfrmPlayer = (function($) {
-    return function() {
+    'use strict'
+
+    return function(track_id) {
         var config
 
         var defaults = {
@@ -7,19 +9,8 @@ var WavfrmPlayer = (function($) {
             section_color: '52d3d3'
         }
 
-        var getQuery = function() {
-            var query = window.location.hash.substring(1);
-            var queryArray = {}
-            var vars = query.split("&");
-            for (var i = 0; i < vars.length; i++) {
-                var pair = vars[i].split("=");
-                queryArray[pair[0]] = pair[1];
-            }
-            return queryArray;
-        }
-
         var init = function($el) {
-            var query = getQuery()
+            var query = WavfrmUtil.getQuery()
             config = $.extend({}, defaults, query)
             if (config.button_color) $('.controls a').css('backgroundColor', '#' + config.button_color)
 
@@ -29,7 +20,7 @@ var WavfrmPlayer = (function($) {
                 },
                 swfpath: '/js/',
                 supplied: 'mp3',
-                cssSelectorAncestor: '.player'
+                cssSelectorAncestor: '#wavfrm_' + track_id
             })
 
 
