@@ -8,6 +8,7 @@ billiard==2.7.3.17
 celery==3.0.11
 django-celery==3.0.11
 django-picklefield==0.2.1
+django-templateaddons==0.1
 kombu==2.4.8
 numpy==1.6.2
 pyechonest==4.3.0
