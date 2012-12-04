@@ -3,6 +3,9 @@
     height: 160px;
     border: 0 none;
 }
+header {
+    margin-top: 20px;
+}
 footer {
     margin: 20px 0;
 }

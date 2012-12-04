@@ -1,4 +1,4 @@
-{% load static %}
+{% load static %}{% load replace %}
 <!doctype html>
 <html>
     <head>
@@ -14,17 +14,19 @@
         <script src="{% static 'js/player.js' %}"></script>
 
     </head>
-    <body>
-        <div class="navbar container">
-            <div class="navbar-inner">
-                <a class="brand" href="/">wavfrm</a>
-                <ul class="nav">
-                    <li class="active"><a href="/">Create</a></li>
-                    <li><a href="/recent-tracks/">Browse</a></li>
-                    <li><a href="/about/">About</a></li>
-                </ul>
+    <body id="view_{% replace search='.' replacement='_' use_regexp=0 %}{{ request.view_name }}{% endreplace %}">
+        <header>
+            <div class="navbar container">
+                <div class="navbar-inner">
+                    <a class="brand" href="/">wavfrm</a>
+                    <ul class="nav">
+                        <li class="{% if request.view_name == 'web.views.homepage' %}active{% endif %}"><a href="/">Create</a></li>
+                        <li class="{% if request.view_name == 'web.views.recent_tracks' %}active{% endif %}"><a href="/recent-tracks/">Browse</a></li>
+                        <li class="{% if request.view_name == 'web.views.about' %}active{% endif %}"><a href="/about/">About</a></li>
+                    </ul>
+                </div>
             </div>
-        </div>
+        </header>
         <div id="content">{% block content %}{% endblock %}</div>
         <footer class="container">
             &copy; Lincoln Bryant 2012

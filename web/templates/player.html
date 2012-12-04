@@ -33,10 +33,11 @@
         var track_id = {{ track.id }};
         var tracks = {{ track_json|safe }};
 
-        var player;
+        var player, canvasPlayer;
         $(function() {
-            player = CanvasPlayer(track_id).init()
-            initPlayer()
+            canvasPlayer = CanvasPlayer(track_id).init()
+            player = WavfrmPlayer()
+            player.init($('#jplayer'))
         })
 
     </script>

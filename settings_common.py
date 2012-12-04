@@ -87,6 +87,18 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'wavfrm.web.middleware.ViewNameMiddleware'
+)
+
+CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.tz",
+    "django.contrib.messages.context_processors.messages",
+    'wavfrm.web.context_processors.view_name_context_processor'
 )
 
 ROOT_URLCONF = 'wavfrm.urls'
@@ -106,6 +118,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'djcelery',
+    'templateaddons',
     'kombu.transport.django',
     'web'
     # Uncomment the next line to enable admin documentation:
