@@ -15,9 +15,9 @@ $(function() {
         $('#img_tag').val(imgHtml)
         var hashParams = preparePost($('#hashform'))
         var hashQuery = '#' + $.param(hashParams)
-        $('#player').attr('src', '/player/' + waveform_id + hashQuery)
+        $('#player').attr('src', '/player/' + waveform_id + '/' + hashQuery)
 
-        $('#embed_code').val('<iframe width="100%" height="240px" src="http://' + document.location.host + '/player/' + waveform_id + hashQuery + '" scrolling="no" border="0"></iframe>')
+        $('#embed_code').val('<iframe width="100%" height="240px" src="http://' + document.location.host + '/player/' + waveform_id + '/' + hashQuery + '" scrolling="no" border="0"></iframe>')
         $('#result').show()
     }
 
@@ -51,6 +51,7 @@ $(function() {
         var form = $('#track_form')
         var post = preparePost(form)
         $.getJSON('/waveform/', post, function(data) {
+            if (!loggedin) Wavfrm.askToConnect()
             waveform_id = data.waveform_id
             track_id = data.track_id
             if (data.status == 'complete') {
@@ -58,6 +59,7 @@ $(function() {
                 return
             }
             $('#status').show()
+
             pollStatus()
         })
         return false

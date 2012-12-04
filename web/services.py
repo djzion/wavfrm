@@ -9,9 +9,9 @@ from audioprocessing.processing import convert_to_pcm, create_wave_images
 from django.conf import settings
 from django.core.files import File
 from audioprocessing.processing import AudioProcessor, WaveformImage
-from decorators import timed
-from drawing import rgb
-from models import Waveform, WaveformStatus
+from .decorators import timed
+from .drawing import rgb
+from .models import Waveform, WaveformStatus
 
 config.ECHO_NEST_API_KEY="QGSW4XPT3YCHCIE61"
 
@@ -88,8 +88,11 @@ def get_echonest_data_for_track(track):
     except EchoNestAPIError:
         log.exception('Echonest failure for track %s' % track)
         return track
-
-    track.title = echo_track.artist + ' - ' + echo_track.title
     track.echonest_analysis = json.dumps(echo_track.__dict__)
+
+    try:
+        track.title = echo_track.artist + ' - ' + echo_track.title
+    except AttributeError:
+        pass
     track.save()
     return track

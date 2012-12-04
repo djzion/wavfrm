@@ -1,14 +1,15 @@
 import json
 from django.shortcuts import get_object_or_404, get_list_or_404, render_to_response
 from django.template.context import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, HttpResponseForbidden
 from django.core.serializers import serialize
 from django.db.models import ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from PIL import ImageFont, Image, ImageDraw
-from web.tasks import create_waveform_task
-from web.models import *
+from .tasks import create_waveform_task
+from .models import *
+from .util import humanize_filename
 
 def homepage(request):
     return render_to_response('homepage.html', locals(), context_instance=RequestContext(request))
@@ -16,9 +17,13 @@ def homepage(request):
 def about(request):
     return render_to_response('about.html', locals(), context_instance=RequestContext(request))
 
-@login_required
-def user_tracks(request):
-    tracks = Track.objects.filter(user=request.user).order_by('-created')
+def user_tracks(request, username=None):
+    if username is None:
+        if request.user and request.user.is_authenticated(): user = request.user
+        else: return HttpResponseForbidden('please log in')
+    else:
+        user = get_object_or_404(User, username=username)
+    tracks = Track.objects.filter(user=user).order_by('-created')
     return render_to_response('user/tracks.html', locals(), context_instance=RequestContext(request))
 
 def recent_tracks(request):
@@ -54,6 +59,8 @@ def create_waveform(request, respond_with='img'):
         except Track.DoesNotExist:
             existing_track = False
             track = Track(url = request.REQUEST['url'])
+            track.title = humanize_filename(os.path.basename(request.REQUEST['url']))
+            if request.user and request.user.is_authenticated(): track.user = request.user
             track.save()
             
     #find a waveform of matching params for this track, if it exists its image is created redirect to it

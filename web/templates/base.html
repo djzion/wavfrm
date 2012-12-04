@@ -3,6 +3,7 @@
 <html>
     <head>
         <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
+        <link href="{{ STATIC_URL }}css/facebook.css" type="text/css" rel="stylesheet" media="all" />
         <link rel="stylesheet" href="{% static 'css/base.css' %}" />
         <link href="/static/css/player.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="{% static 'spectrum/spectrum.css' %}" />
@@ -11,8 +12,19 @@
         <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
         <script src="{% static 'js/jquery.jplayer.min.js' %}"></script>
         <script src="{% static 'spectrum/spectrum.js' %}"></script>
+        <script src="{% static 'js/main.js' %}"></script>
+
+        {% if request.user and request.user.is_authenticated %}
+        <script>var loggedin = true;</script>
+        {% else %}
+        <script>var loggedin = false;</script>
+        {% endif %}
+
+        {% include 'django_facebook/_facebook_js.html' %}
+
         <script src="{% static 'js/util.js' %}"></script>
         <script src="{% static 'js/player.js' %}"></script>
+
 
     </head>
     <body id="view_{% replace search='.' replacement='_' use_regexp=0 %}{{ request.view_name }}{% endreplace %}">
@@ -24,6 +36,24 @@
                         <li class="{% if request.view_name == 'web.views.homepage' %}active{% endif %}"><a href="/">Create</a></li>
                         <li class="{% if request.view_name == 'web.views.recent_tracks' %}active{% endif %}"><a href="/recent-tracks/">Browse</a></li>
                         <li class="{% if request.view_name == 'web.views.about' %}active{% endif %}"><a href="/about/">About</a></li>
+
+                    </ul>
+                    <ul class="nav" style="float: right">
+                        {% if request.user and request.user.is_authenticated %}
+                            <li class="identity">
+                                <div class="photo-wrapper"><img src="{{ request.user.facebookprofile.image.url }}" /></div>
+                                <a class="name" href="#">{{ request.user.facebookprofile.facebook_name }}</a>
+                            </li>
+                            <li><a href="/my/tracks/">Your Tracks</a></li>
+                            <li><a href="/logout/">Logout</a></li>
+                        {% else %}
+                            <li>
+                                <form action="{% url facebook_connect %}?facebook_login=1" method="post" id="facebook_connect_form">
+                                    <a class="facebook-connect" href="javascript:void(0);" onclick="F.connect(this.parentNode);">Register, login or connect with facebook</a>
+                                    <input type="hidden" value="{{ request.path }}" name="next" />
+                                </form>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

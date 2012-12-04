@@ -1,6 +1,6 @@
 from celery.decorators import task
-from services import get_peaks, get_echonest_data_for_track, draw_peaks
-from models import WaveformStatus
+from .services import get_peaks, get_echonest_data_for_track, draw_peaks
+from .models import WaveformStatus
 
 @task
 def create_waveform_task(waveform, force_regen):

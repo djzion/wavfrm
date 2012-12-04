@@ -90,7 +90,8 @@ MIDDLEWARE_CLASSES = (
     'wavfrm.web.middleware.ViewNameMiddleware'
 )
 
-CONTEXT_PROCESSORS = (
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django_facebook.context_processors.facebook',
     "django.contrib.auth.context_processors.auth",
     "django.core.context_processors.debug",
     "django.core.context_processors.i18n",
@@ -100,6 +101,13 @@ CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     'wavfrm.web.context_processors.view_name_context_processor'
 )
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'django_facebook.auth_backends.FacebookBackend'
+)
+
+AUTH_PROFILE_MODULE = 'django_facebook.FacebookProfile'
 
 ROOT_URLCONF = 'wavfrm.urls'
 
@@ -117,10 +125,13 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'web',
+    'django_facebook',
     'djcelery',
+    'tastypie',
     'templateaddons',
     'kombu.transport.django',
-    'web'
+
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -149,6 +160,8 @@ LOGGING = {
 }
 
 TMP_DIR = '/tmp'
+
+APPEND_SLASH = False
 
 BROKER_URL = 'django://'
 import djcelery

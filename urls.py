@@ -6,6 +6,9 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
+    (r'^facebook/', include('django_facebook.urls')),
+    (r'^accounts/', include('django_facebook.auth_urls')),
+    (r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
     (r'^', include('web.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
