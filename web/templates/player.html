@@ -1,16 +1,13 @@
 {% extends 'base_player.html' %}
 
 {% block content %}
-    <script type="text/javascript">
-    var tracks = {{ track_json|safe }};
-    </script>
     <div class="player jp-interface">
         <div class="header">
             <h3>{{ track.title }}</h3>
         </div>
         <div class="content">
             <div class="left controls" style="display: table;">
-                <div style="width: 100%; font-size: 0.8em; position: absolute; top: 40px; left: 10px;">
+                <div class="time">
                     <span class="jp-current-time"></span> / <span class="jp-duration"></span>
                 </div>
                 <div style="display: table-cell; vertical-align: middle">
@@ -34,6 +31,8 @@
 
     <script>
         var track_id = {{ track.id }};
+        var tracks = {{ track_json|safe }};
+
         var player;
         $(function() {
             player = CanvasPlayer(track_id).init()

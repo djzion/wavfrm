@@ -20,7 +20,11 @@ html, body {
 }
 
 .player .content {
-    height: 200px;
+    position: absolute;
+    top: 30px;
+    bottom: 0;
+    left:  0;
+    width: 100%;
 }
 
 .player .left {
@@ -28,6 +32,10 @@ html, body {
     width: 100px;
     height: 100%;
     border: 1px solid #ccc;
+}
+
+.player .left .time {
+    width: 100%; font-size: 0.8em; position: absolute; top: 10px; left: 10px;
 }
 
 .player .waveform {

@@ -18,11 +18,11 @@ def about(request):
 
 @login_required
 def user_tracks(request):
-    tracks = Track.objects.get(user=request.user).order_by('-created')
+    tracks = Track.objects.filter(user=request.user).order_by('-created')
     return render_to_response('user/tracks.html', locals(), context_instance=RequestContext(request))
 
 def recent_tracks(request):
-    tracks = Track.objects.order_by('-created')[:20]
+    tracks = Track.objects.all().order_by('-created')[:8]
     return render_to_response('recent_tracks.html', locals(), context_instance=RequestContext(request))
 
 def player(request, waveform_id):
@@ -31,16 +31,6 @@ def player(request, waveform_id):
     track_json = serialize('json', [track])
     return render_to_response('player.html', locals(), context_instance=RequestContext(request))
 
-def create_track(request):
-    if request.method == 'POST':
-        t = Track(
-            url = request.REQUEST['url']
-        )
-        t.save()
-        create_waveform(t)
-        
-    return render_to_response('create_track.html', locals(), context_instance=RequestContext(request))
-    
 def create_waveform(request, respond_with='img'):
     async = int(request.REQUEST.get('async', 1))
     force_regen = int(request.REQUEST.get('force_regen', 0))
