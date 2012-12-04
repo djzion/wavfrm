@@ -10,7 +10,7 @@ $(function() {
     }
 
     var showResult = function() {
-        var imgHtml = '<img src="http://' + document.location.host + '/waveform/' + waveform_id + '/" />'
+        var imgHtml = '<img src="http://' + document.location.host + '/waveform/' + waveform_id + '/img/" />'
         //$('#img_container').html(imgHtml)
         $('#img_tag').val(imgHtml)
         var hashParams = preparePost($('#hashform'))
