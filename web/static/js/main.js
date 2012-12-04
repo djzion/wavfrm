@@ -5,8 +5,32 @@ Wavfrm = {
             content: 'To access your tracks later, please Connect with Facebook.',
             trigger: 'manual',
             placement: 'left'
-        }).popover('show').css('margin-top', '10px')
+        }).popover('show')
+        var $popover = $('#facebook_connect_form').parents('.nav').find('.popover')
+        $popover.css('top', '+=10px')
+    },
+
+    getUserInfo: function() {
+        var req = $.ajax({
+            url: '/api/v1/me/',
+            dataType: 'json',
+            headers: {'content-type': 'application/json'},
+            async: false,
+            success: function(data) {
+                Wavfrm.user = data.objects[0]
+            }
+        })
+        return Wavfrm.user
+    },
+
+    /* popup window facebook flow */
+    onFacebookConnect: function() {
+        console.log('Facebook connected')
+        Wavfrm.getUserInfo()
+        loggedin = true;
+        $('body').trigger('wavfrm:facebook_connect')
     }
+
 }
 
 $(function() {
@@ -20,13 +44,7 @@ $(function() {
 
 })
 
-/* popup window facebook flow */
-function onFacebookConnect() {
-    console.log('Facebook connected')
-    loggedin = true;
-}
-
 if (window.name == 'facebook_connect') {
-    window.opener.onFacebookConnect()
+    window.opener.Wavfrm.onFacebookConnect()
     window.close()
 }

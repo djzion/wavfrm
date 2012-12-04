@@ -163,6 +163,8 @@ TMP_DIR = '/tmp'
 
 APPEND_SLASH = False
 
+TASTYPIE_FULL_DEBUG = True
+
 BROKER_URL = 'django://'
 import djcelery
 djcelery.setup_loader()

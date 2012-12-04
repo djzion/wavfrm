@@ -74,7 +74,7 @@ facebookClass.prototype = {
                     scope.connectLoading(gettext('Now loading your profile...'));
                     //submit the form
                     //formElement.submit();
-                    var w = window.open(formElement.action,'facebook_connect','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,width=4600,height=300,left = 312,top = 234');
+                    var w = window.open(formElement.action,'facebook_connect','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,width=600,height=300,left = 312,top = 234');
                     $('#facebook_container').remove()
                     return false;
                 }

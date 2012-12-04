@@ -1,10 +1,12 @@
 import os, pickle
 from django.test import TestCase, Client
+from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.files import File
+from tastypietest import *
 from pyechonest.track import *
 from pyechonest import config
-import models
+from . import models
 
 class ApiTest(TestCase):
     url = 'http://unhearduv.com/wp-content/uploads/Perspective.mp3'
@@ -26,6 +28,27 @@ class ApiTest(TestCase):
     def test_colored(self):
         c = Client()
         resp = c.get('/waveform/', {'url': self.url, 'async': 0, 'color': '333333', 'color2': 'ff0000'})
+
+class TastypieTest(ResourceTestCase):
+
+    def setUp(self):
+        super(TastypieTest, self).setUp()
+
+    def test_associate_track_to_user(self):
+        user = User.objects.create_user(username='lincoln', email='bryant.lincoln@gmail.com', password='secret')
+        self.api_client.client.login(username=user.username, password='secret')
+        track = models.Track.objects.create(title='test', url='http://unhearduv.com/wp-content/uploads/2012/06/1-Pericles-Rise-of-the-Jellyfish.mp3')
+
+        data = {'user': '/api/v1/user/%s/' % user.id, 'track': '/api/v1/track/%s/' % track.id}
+        with self.settings(DEBUG=True):
+            resp = self.api_client.patch('/api/v1/track/%s/' % track.id, data=data, content_type='application/json')
+
+        resp = self.api_client.get('/api/v1/track/?format=json')
+        track = models.Track.objects.get(id=track.id)
+        assert track.user == user
+
+    def get_credentials(self):
+        return self.create_basic(username=self.username, password=self.password)
 
 class EchonestTest(TestCase):
     url = 'http://unhearduv.com/wp-content/uploads/2012/06/1-Pericles-Rise-of-the-Jellyfish.mp3'
@@ -70,3 +93,4 @@ class WaveformFactory(object):
         )
         waveform.save()
         return waveform
+

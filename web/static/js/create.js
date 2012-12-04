@@ -47,11 +47,28 @@ $(function() {
         return post
     }
 
+    var onFacebookConnect = function(e) {
+        var params = {
+            user: Wavfrm.user.resource_uri,
+            track: '/api/v1/track/' + track_id + '/'
+        }
+        $.ajax({
+            url: '/api/v1/track/' + track_id + '/',
+            data: JSON.stringify(params),
+            dataType: 'json',
+            headers: {'Content-type': 'application/json'},
+            type: 'PATCH'
+        })
+    }
+
     $('#submit').click(function() {
         var form = $('#track_form')
         var post = preparePost(form)
         $.getJSON('/waveform/', post, function(data) {
-            if (!loggedin) Wavfrm.askToConnect()
+            if (!loggedin) {
+                Wavfrm.askToConnect()
+                $('body').on('wavfrm:facebook_connect', onFacebookConnect)
+            }
             waveform_id = data.waveform_id
             track_id = data.track_id
             if (data.status == 'complete') {
@@ -59,7 +76,6 @@ $(function() {
                 return
             }
             $('#status').show()
-
             pollStatus()
         })
         return false
