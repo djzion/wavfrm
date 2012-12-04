@@ -7,5 +7,6 @@ def humanize_filename(filename):
         '_': ' ',
         '.': ' '
     }
-    [filename.replace(search, replace) for search, replace in replace_map.iteritems()]
+    for search, replace in replace_map.iteritems():
+        filename = filename.replace(search, replace)
     return filename
