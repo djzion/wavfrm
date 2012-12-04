@@ -1,0 +1,6 @@
+[submodule "web/static/js/spectrum.js"]
+	path = web/static/js/spectrum.js
+	url = https://github.com/bgrins/spectrum.git/master/spectrum.js
+[submodule "web/static/spectrum"]
+	path = web/static/spectrum
+	url = https://github.com/bgrins/spectrum.git

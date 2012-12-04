@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="recent_tracks" class="container">
+    <h1>Recent Tracks</h1>
+    {% for track in tracks %}
+    <iframe src="/player/{{ track.primary_waveform.id }}/" />
+    {% endfor %}
+</div>
+{% endblock %}

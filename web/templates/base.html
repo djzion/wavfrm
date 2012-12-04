@@ -1,15 +1,30 @@
+{% load static %}
 <!doctype html>
 <html>
     <head>
         <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="{% static 'css/base.css' %}" />
         <link href="/static/css/player.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="{% static 'spectrum/spectrum.css' %}" />
+        <script src="{% static 'js/underscore.js' %}"></script>
+        <script src="{% static 'js/jquery.js' %}"></script>
+        <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+        <script src="{% static 'js/jquery.jplayer.min.js' %}"></script>
+        <script src="{% static 'spectrum/spectrum.js' %}"></script>
+        <script src="{% static 'js/player.js' %}"></script>
 
-        <script src="/static/js/jquery.min.js"></script>
-        <script src="/static/js/bootstrap/bootstrap.min.js"></script>
-        <script src="/static/js/jquery.jplayer.min.js"></script>
-        <script src="/static/js/player.js"></script>
     </head>
     <body>
+        <div class="navbar container">
+            <div class="navbar-inner">
+                <a class="brand" href="/">wavfrm</a>
+                <ul class="nav">
+                    <li class="active"><a href="/">Create</a></li>
+                    <li><a href="/recent-tracks/">Browse</a></li>
+                    <li><a href="/about/">About</a></li>
+                </ul>
+            </div>
+        </div>
         <div id="content">{% block content %}{% endblock %}</div>
     </body>
 </html>

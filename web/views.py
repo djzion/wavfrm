@@ -13,10 +13,17 @@ from web.models import *
 def homepage(request):
     return render_to_response('homepage.html', locals(), context_instance=RequestContext(request))
 
+def about(request):
+    return render_to_response('about.html', locals(), context_instance=RequestContext(request))
+
 @login_required
 def user_tracks(request):
     tracks = Track.objects.get(user=request.user).order_by('-created')
     return render_to_response('user/tracks.html', locals(), context_instance=RequestContext(request))
+
+def recent_tracks(request):
+    tracks = Track.objects.order_by('-created')[:20]
+    return render_to_response('recent_tracks.html', locals(), context_instance=RequestContext(request))
 
 def player(request, waveform_id):
     waveform = get_object_or_404(Waveform, id=waveform_id)
@@ -94,10 +101,10 @@ def get_track(request, track_id):
 
 def canvas_track(request, track_id):
     return render_to_response('canvas_player.html', locals(), context_instance=RequestContext(request))
-            
-def waveform_processing(request, t):
+
+def waveform_processing(request):
     """
-    Interstitial for async mode
+    Interstitial for synchronouts mode
     :param request:
     :param t:
     :return:

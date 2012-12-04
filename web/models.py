@@ -8,6 +8,11 @@ def get_task_path(instance, filename, media_subfolder):
     return media_subfolder + '/' + filename
 
 def choices(choice_cls):
+    """
+    Create list for choices kwarg of Field from enum class
+    :param choice_cls: type
+    :return:
+    """
     return [(attr, attr) for attr in choice_cls.__dict__.keys() if not attr.startswith('_')]
 
 class MockFileField(object):
@@ -57,6 +62,11 @@ class Track(models.Model):
     def get_spectrum(self):
         return MockFileField(self.spectrum_img_path, 'waveforms')
     waveform = property(get_waveform)
+
+    @property
+    def primary_waveform(self):
+        return self.waveform_set.order_by('-created')[0]
+
 
 class WaveformStatus:
     waiting = 'waiting'

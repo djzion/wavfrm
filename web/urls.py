@@ -2,9 +2,11 @@ from django.conf.urls.defaults import patterns, include, url
 
 urlpatterns = patterns('web.views',
     (r'^$', 'homepage'),
+    (r'^recent-tracks/$', 'recent_tracks'),
+    (r'^about/$', 'about'),
     (r'^player/(?P<waveform_id>\d+)/$', 'player'),
     (r'^canvas_player/(?P<track_id>\d+)/$', 'canvas_track'),
-    (r'^create_track/$', 'create_track'),
+
     (r'^waveform/$', 'create_waveform', {'respond_with': 'json'}),
     (r'^waveform/img/$', 'create_waveform', {'respond_with': 'img'}),
     (r'^waveform/(?P<waveform_id>\d+)/img/$', 'show_waveform_img'),

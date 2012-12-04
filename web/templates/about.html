@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+<h1>About Wavfrm</h1>
+    <p>
+    Wavfrm provides an API that allows users to create a visual waveform image by uploading a song and specifying stylistic parameters; to enhance their websites or apps. This image generation is based directly on audio, but uses the EchoNest api for enhancement (although a goal is to support very long and short audio, where Echonest does not). A Soundcloud-like embeddable player is provided for free, pointing to where the audio was scraped from, it could easily be extended to power all songs on a blog or in a Dropbox.
+    </p>
+    <p>
+    Platform is Django for web, Celery for background processing, numpy and audiolab for audio processing. I have borrowed some code from Freesound codebase to jump-start the waveform drawing.
+    </p>
+    <p>
+    The homepage allows intuitive user of the API without technical requirements. The first time a url is requested, one must wait for processing (can be either blocking or non-blocking). After the initial time, the API remembers a track and will return immediately. Extracted audio data is stored so stylistic parameters can be altered almost instantaneously. Users may keep pointing to the API's image endpoints and need not download and store generated images themselves.
+    </p>
+</div>
+{% endblock %}

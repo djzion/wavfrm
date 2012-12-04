@@ -1,12 +1,13 @@
+{% load static %}
 <!doctype html>
 <html>
     <head>
         <link href="/static/css/player.css" rel="stylesheet" type="text/css" />
-        <script src="/static/js/underscore.js"></script>
-        <script src="/static/js/jquery.min.js"></script>
-        <script src="/static/js/jquery.jplayer.min.js"></script>
-        <script src="/static/js/player.js"></script>
-        <script src="/static/js/canvas_waveform.js"></script>
+        <script src="{% static 'js/underscore.js' %}"></script>
+        <script src="{% static 'js/jquery.js' %}"></script>
+        <script src="{% static 'js/jquery.jplayer.min.js' %}"></script>
+        <script src="{% static 'js/player.js' %}"></script>
+        <script src="{% static 'js/canvas_waveform.js' %}"></script>
     </head>
     <body class="{% if request.GET.framed %}framed{% endif %}">
         <div id="content">{% block content %}{% endblock %}</div>

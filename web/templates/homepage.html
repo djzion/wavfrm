@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <h1>Wavfrm</h1>
-    <h3>Upload your songs, sets, or shows and get a visual waveform image and embeddable player.</h3>
+    <h3>Upload audio and get a visual waveform image and embeddable player.</h3>
 
     <div id="status" style="display: none;">
         <h2></h2>
@@ -13,17 +13,37 @@
     <div class="row-fluid">
 
         <div class="span4">
-            <form id="track_form">
-                <label>URL:</label><input name="url" />
-                <label>Bass Color:</label><input class="colorpicker" name="color" value="161616" />
-                <label>Treble Color:</label><input class="colorpicker" name="color_centroid" value="006699" />
-                <input class="btn" type="submit" id="submit" value="Go" />
+            <form id="track_form" class="form-inline">
+                <div class="control-group">
+                    <label class="">URL:</label>
+                    <div class="controls">
+                        <input required="required" name="url" class="input-small" type="text" style="width: 100%" />
+                    </div>
+                </div>
+                <div class="control-group">
+
+                    <label>Bass Color:</label>
+                    <div class="controls">
+                        <input class="colorpicker input-small" name="color" value="161616" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Treble Color:</label>
+                    <div class="controls">
+                        <input class="colorpicker input-small" name="color_centroid" value="006699" />
+                    </div>
+                </div>
+
             </form>
 
             <form id="hashform">
-                <label>Section Marker Color</label><input name="section_color" value="52d3d3" />
-                <label>Button Color</label><input name="button_color" value="52d3d3" />
+                <label>Section Marker Color</label><input class="colorpicker" name="section_color" value="52d3d3" />
+                <label>Button Color</label><input class="colorpicker" name="button_color" value="52d3d3" />
             </form>
+
+            <div class="control-group">
+                <a class="btn btn-large btn-primary" id="submit">Go</a>
+            </div>
         </div>
 
         <div id="result" class="span8" style="display: none">
@@ -54,10 +74,11 @@ $(function() {
     }
 
     var showResult = function() {
-        var imgHtml = '<img src="/waveform/' + waveform_id + '/" />'
+        var imgHtml = '<img src="http://' + document.location.host + '/waveform/' + waveform_id + '/" />'
         //$('#img_container').html(imgHtml)
         $('#img_tag').val(imgHtml)
-        var hashQuery = '#' + $('#hashform').serialize(true)
+        var hashParams = preparePost($('#hashform'))
+        var hashQuery = '#' + $.param(hashParams)
         $('#player').attr('src', '/player/' + waveform_id + hashQuery)
 
         $('#embed_code').val('<iframe width="100%" height="240px" src="http://' + document.location.host + '/player/' + waveform_id + hashQuery + '" scrolling="no" border="0"></iframe>')
@@ -79,9 +100,21 @@ $(function() {
         })
     }
 
-    $('#track_form').submit(function() {
-        var params = $(this).serialize(true)
-        $.getJSON('/waveform/', params, function(data) {
+    var preparePost = function(form) {
+        var params = form.serializeArray(true)
+        var post = {}
+        params = _.filter(params, function(param) { return param.value != '' })
+        $(params).each(function(i, param) {
+            if (param.value[0] == '#') params[i].value = param.value.replace('#', '')
+            post[param.name] = param.value
+        })
+        return post
+    }
+
+    $('#submit').click(function() {
+        var form = $('#track_form')
+        var post = preparePost(form)
+        $.getJSON('/waveform/', post, function(data) {
             waveform_id = data.waveform_id
             track_id = data.track_id
             if (data.status == 'complete') {
@@ -93,7 +126,12 @@ $(function() {
         })
         return false
     })
+
+    $('input.colorpicker').spectrum({
+        showInput: true
+    });
 })
+
 
 </script>
 <style>
